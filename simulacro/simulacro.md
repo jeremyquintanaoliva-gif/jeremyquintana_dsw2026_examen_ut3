@@ -1,1 +1,1 @@
-# Carpeta donde realizaremos el simulacro de examen
+cd# Carpeta donde realizaremos el simulacro de examen
