@@ -1,11 +1,11 @@
 import type { NextFunction, Request, Response } from 'express';
 
 import { env } from '../config/env.js';
-import { AppError } from '../errors/AppError.js';
+import { AppError, ResourceNotFoundError } from '../errors/AppError.js';
 
-// Express recognises an error handler because it has FOUR parameters.
-// `_next` is never used, but it must be there: with three parameters Express
-// would treat this function as a normal middleware and never hand it errors.
+// Express reconoce este gestor de errores porque tiene CUATRO parámetros.
+// _next no se utiliza, pero es obligatorio: con solo tres parámetros Express
+// lo trataría como un middleware normal y no le entregaría los errores.
 export function errorHandler(
   err: Error,
   req: Request,
@@ -23,20 +23,33 @@ export function errorHandler(
     }),
   );
 
-  // Expected errors: thrown on purpose by our code (400, 404...).
-  if (err instanceof AppError) {
-    res.status(err.statusCode).json({ error: err.code ?? 'ERROR', message: err.message });
-    return;
+  // ResourceNotFoundError incluye el identificador que no se pudo encontrar,
+  // por lo que la respuesta puede dar un contexto más concreto que un error 404 normal.
+  if (err instanceof ResourceNotFoundError) {
+  res.status(err.statusCode).json({
+    message: err.message,
+    resourceId: err.resourceId,
+  });
+  return;
   }
 
-  // express.json() throws a SyntaxError when the body is not valid JSON.
-  // It is the client's fault, so it is a 400, not a 500.
+  if (err instanceof AppError) {
+  res.status(err.statusCode).json({
+    error: err.code ?? 'ERROR',
+    message: err.message,
+  });
+  return;
+  }
+
+  // express.json() lanza SyntaxError cuando el cuerpo no contiene JSON válido.
+  // El problema pertenece al cliente, por lo que se responde con 400.
   if (err instanceof SyntaxError && 'body' in err) {
     res.status(400).json({ error: 'INVALID_JSON', message: 'Request body is not valid JSON' });
     return;
   }
 
-  // Anything else is unexpected: 500, without internal details in production.
+  // Cualquier otro error es inesperado: se responde con 500.
+  // En producción no se muestran detalles internos de la excepción.
   res.status(500).json({
     error: 'INTERNAL_ERROR',
     message: isProduction ? 'An unexpected error occurred' : err.message,

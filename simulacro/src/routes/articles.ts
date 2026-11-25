@@ -1,6 +1,6 @@
-// Routes layer: only maps method + path to a controller function.
-// Same URLs as the Topic 04 router; the logic now lives in the controller
-// (HTTP) and in the service (data).
+// Capa de rutas: relaciona cada método HTTP y cada ruta con su controlador.
+// La información de la petición se gestiona en el controlador y los datos
+// se gestionan en el servicio.
 
 import { Router } from 'express';
 

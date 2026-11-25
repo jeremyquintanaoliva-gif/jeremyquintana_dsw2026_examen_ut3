@@ -1,7 +1,7 @@
 import express from 'express';
 import type { Application } from 'express';
 
-import { documentsRouter } from './routes/documents.js'; // ← NUEVO
+import { documentsRouter } from './routes/documents.js';
 import { healthRouter } from './routes/health.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { logger } from './middlewares/logger.js';
@@ -13,7 +13,9 @@ import { questionsRouter } from './routes/questions.js';
 export function createApp(): Application {
   const app = express();
 
-  app.use(requestId); // first: everything after it can read req.requestId
+  // El orden importa: requestId crea el identificador antes de que logger y
+  // los demás middlewares puedan registrarlo o devolverlo en una respuesta.
+  app.use(requestId); // Genera el identificador antes de pasar por el resto.
   app.use(logger);
   app.use(express.json());
 
@@ -22,8 +24,10 @@ export function createApp(): Application {
   app.use('/api/v1/documents', documentsRouter);
   app.use('/api/v1/questions', questionsRouter);
 
-  app.use(notFound); // only reached when no router answered
-  app.use(errorHandler); // always last
+  // Estos dos controles deben quedar al final: notFound solo recibe peticiones
+  // que no coincidieron con ninguna ruta y errorHandler procesa los errores.
+  app.use(notFound); // Solo responde si ninguna ruta ha atendido la petición.
+  app.use(errorHandler); // Debe ir último para recibir los errores del resto.
 
   return app;
 }

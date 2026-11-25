@@ -1,6 +1,6 @@
-// Controllers layer: reads req, checks the input by hand, calls the service
-// and answers. Errors are thrown as AppError and handed to the central
-// errorHandler with next(err).
+// Capa de controladores: recibe la petición HTTP, valida sus datos,
+// llama al servicio correspondiente y construye la respuesta.
+// Los errores se envían con next(err) al gestor central errorHandler.
 
 import type { NextFunction, Request, Response } from 'express';
 
@@ -9,7 +9,7 @@ import * as articlesService from '../services/articlesService.js';
 
 export function list(req: Request, res: Response, next: NextFunction): void {
   try {
-    // req.query always arrives as text: the controller converts it.
+    // Los parámetros de la URL llegan como texto; aquí se convierten a números.
     const page = Number(req.query.page ?? 1);
     const limit = Number(req.query.limit ?? 20);
     res.json(articlesService.list(page, limit));

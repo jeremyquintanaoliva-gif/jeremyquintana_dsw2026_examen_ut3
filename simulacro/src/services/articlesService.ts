@@ -1,5 +1,5 @@
-// Services layer: business logic and data. Plain TypeScript — it never
-// imports Express nor touches req/res/next, so it can be tested without HTTP.
+// Capa de servicios: contiene la lógica y los datos.
+// No utiliza Express, por lo que puede probarse sin realizar peticiones HTTP.
 
 import { randomUUID } from 'node:crypto';
 
@@ -15,7 +15,8 @@ export interface ArticleChanges {
   description?: string;
 }
 
-// The in-memory array now lives here, not in the routes.
+// Los datos existen solamente durante la ejecución del servidor.
+// Se pierden al reiniciar porque todavía no se utiliza una base de datos.
 const articles: Article[] = [];
 
 export function list(page: number, limit: number) {
