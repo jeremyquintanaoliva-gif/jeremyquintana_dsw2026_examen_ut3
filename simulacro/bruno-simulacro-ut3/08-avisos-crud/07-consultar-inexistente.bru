@@ -1,0 +1,16 @@
+meta {
+  name: 08.7 Consultar aviso inexistente (404)
+  type: http
+  seq: 7
+}
+
+get {
+  url: http://localhost:4000/api/v1/notices/aviso-no-existe
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+  res.body.resourceId: eq aviso-no-existe
+}

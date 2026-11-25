@@ -1,5 +1,5 @@
-// Capa de servicios: contiene la lógica y los datos.
-// No utiliza Express, por lo que puede probarse sin realizar peticiones HTTP.
+// Capa de lógica y datos de artículos. No depende de Express, por lo que
+// puede ejecutarse independientemente de las peticiones HTTP.
 
 import { randomUUID } from 'node:crypto';
 
@@ -15,11 +15,12 @@ export interface ArticleChanges {
   description?: string;
 }
 
-// Los datos existen solamente durante la ejecución del servidor.
-// Se pierden al reiniciar porque todavía no se utiliza una base de datos.
+// Almacenamiento temporal en memoria. Los cambios se pierden al reiniciar
+// el servidor porque este simulacro todavía no usa una base de datos.
 const articles: Article[] = [];
 
 export function list(page: number, limit: number) {
+  // page 1 comienza en el índice 0; restar 1 permite calcular el inicio.
   const start = (page - 1) * limit;
   return {
     data: articles.slice(start, start + limit),
@@ -32,6 +33,7 @@ export function getById(id: string): Article | undefined {
 }
 
 export function create(title: string, description: string): Article {
+  // randomUUID crea un identificador único para el nuevo recurso.
   const article: Article = {
     id: randomUUID(),
     title,

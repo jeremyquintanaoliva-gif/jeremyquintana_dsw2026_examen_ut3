@@ -1,0 +1,24 @@
+meta {
+  name: 08.13 JSON mal formado en avisos (400)
+  type: http
+  seq: 13
+}
+
+post {
+  url: http://localhost:4000/api/v1/notices
+  body: text
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:text {
+  {"title": 
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq INVALID_JSON
+}

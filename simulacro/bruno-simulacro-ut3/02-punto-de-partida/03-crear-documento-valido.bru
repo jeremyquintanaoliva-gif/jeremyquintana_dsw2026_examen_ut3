@@ -1,0 +1,22 @@
+meta {
+  name: 02.3 Crear documento valido
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:4000/api/v1/documents
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Documento de prueba",
+    "description": "Creado desde Bruno"
+  }
+}
+
+assert {
+  res.status: eq 201
+}

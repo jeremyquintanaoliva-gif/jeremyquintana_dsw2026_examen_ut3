@@ -1,4 +1,4 @@
-
+// Devuelve una respuesta fija de demostración junto con una cita a un documento.
 export function answerQuestion() {
   return {
     answer: 'Respuesta simulada: consulta la documentación pública del centro.',
@@ -6,8 +6,7 @@ export function answerQuestion() {
       {
         documentId: '11111111-1111-4111-8111-111111111111',
         title: 'Guía pública del centro',
-        excerpt:
-          'La información actualizada está disponible en los canales oficiales.',
+        excerpt: 'La información actualizada está disponible en los canales oficiales.',
       },
     ],
   };

@@ -1,0 +1,21 @@
+meta {
+  name: 08.8 PATCH solo description
+  type: http
+  seq: 8
+}
+
+patch {
+  url: http://localhost:4000/api/v1/notices/aviso-1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "description": "Nueva descripcion"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

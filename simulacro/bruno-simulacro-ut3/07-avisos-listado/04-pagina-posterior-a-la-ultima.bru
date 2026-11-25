@@ -1,0 +1,21 @@
+meta {
+  name: 07.4 Pagina posterior a la ultima (array vacio)
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:4000/api/v1/notices?page=99&limit=2
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 99
+  limit: 2
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.length: eq 0
+}

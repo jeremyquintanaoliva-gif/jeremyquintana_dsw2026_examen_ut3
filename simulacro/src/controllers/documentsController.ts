@@ -3,7 +3,8 @@ import type { Request, Response, NextFunction } from 'express';
 import * as documentsService from '../services/documentsService.js';
 import { AppError, ResourceNotFoundError } from '../errors/AppError.js';
 
-// Lista una página de documentos y permite enviar page y limit como parámetros.
+// Convierte los parámetros de paginación y delega la consulta al servicio.
+// Los parámetros llegan como texto desde la URL y Number los transforma a números.
 export function list(req: Request, res: Response, next: NextFunction): void {
   try {
     const page = Number(req.query.page ?? 1);
@@ -15,12 +16,9 @@ export function list(req: Request, res: Response, next: NextFunction): void {
   }
 }
 
-// Obtener documento por ID
-export function getById(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+// Busca un documento por su identificador. Si no existe, crea un error
+// especializado que el middleware central devolverá como una respuesta 404.
+export function getById(req: Request, res: Response, next: NextFunction): void {
   try {
     const document = documentsService.getById(String(req.params.documentId));
 
@@ -39,12 +37,9 @@ export function getById(
   }
 }
 
-// Crear documento
-export function create(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+// Valida el título obligatorio y delega la creación al servicio.
+// La descripción es opcional y solo se acepta si es una cadena de texto.
+export function create(req: Request, res: Response, next: NextFunction): void {
   try {
     const { title, description } = req.body;
 
@@ -63,20 +58,15 @@ export function create(
   }
 }
 
-// Modificar documento
-export function update(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+// Valida únicamente los campos enviados antes de aplicar la modificación.
+// Al ser PATCH, title y description son opcionales y pueden actualizarse por separado.
+export function update(req: Request, res: Response, next: NextFunction): void {
   try {
     const { title, description } = req.body;
 
-    // Comprobar el título antes de llamar al servicio
-    if (
-      title !== undefined &&
-      (typeof title !== 'string' || title.trim() === '')
-    ) {
+    // trim() elimina espacios iniciales y finales. Si queda vacío,
+    // el título no es válido aunque el texto original solo contuviera espacios.
+    if (title !== undefined && (typeof title !== 'string' || title.trim() === '')) {
       res.status(400).json({
         error: 'INVALID_TITLE',
         message: 'Title must be a non-empty string',
@@ -84,19 +74,17 @@ export function update(
       return;
     }
 
-    // Comprobar la descripción
+    // Una descripción presente debe ser siempre una cadena.
     if (description !== undefined && typeof description !== 'string') {
       throw new AppError(400, 'Invalid description', 'BAD_REQUEST');
     }
 
-    const document = documentsService.update(
-      String(req.params.documentId),
-      {
-        title: typeof title === 'string' ? title.trim() : undefined,
-        description:
-          typeof description === 'string' ? description.trim() : undefined,
-      },
-    );
+    // undefined significa "no modificar este campo". trim() normaliza el
+    // título y la descripción antes de enviarlos al servicio.
+    const document = documentsService.update(String(req.params.documentId), {
+      title: typeof title === 'string' ? title.trim() : undefined,
+      description: typeof description === 'string' ? description.trim() : undefined,
+    });
 
     if (!document) {
       throw new ResourceNotFoundError(

@@ -1,4 +1,3 @@
-
 import { randomUUID } from 'node:crypto';
 
 export interface Document {
@@ -13,7 +12,7 @@ export interface DocumentChanges {
   description?: string;
 }
 
-// Datos en memoria
+// Datos iniciales en memoria. Se usan como punto de partida del simulacro.
 const documents: Document[] = [
   {
     id: '11111111-1111-4111-8111-111111111111',
@@ -29,7 +28,7 @@ const documents: Document[] = [
   },
 ];
 
-// Listar documentos
+// Calcula el segmento correspondiente a la página solicitada.
 export function list(page: number, limit: number) {
   const start = (page - 1) * limit;
 
@@ -43,12 +42,12 @@ export function list(page: number, limit: number) {
   };
 }
 
-// Obtener documento por ID
+// find devuelve el primer elemento cuyo id coincide o undefined si no existe.
 export function getById(id: string): Document | undefined {
   return documents.find((document) => document.id === id);
 }
 
-// Crear documento
+// Construye un nuevo documento, genera su identificador y lo añade a memoria.
 export function create(title: string, description: string): Document {
   const document: Document = {
     id: randomUUID(),
@@ -62,11 +61,8 @@ export function create(title: string, description: string): Document {
   return document;
 }
 
-// Modificar documento
-export function update(
-  id: string,
-  changes: DocumentChanges,
-): Document | undefined {
+// Aplica solo las propiedades presentes en changes y conserva las demás.
+export function update(id: string, changes: DocumentChanges): Document | undefined {
   const document = getById(id);
 
   if (!document) {

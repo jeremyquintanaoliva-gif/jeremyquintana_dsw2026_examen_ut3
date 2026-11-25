@@ -1,0 +1,22 @@
+meta {
+  name: 08.10 PATCH title vacio + description valida (400)
+  type: http
+  seq: 10
+}
+
+patch {
+  url: http://localhost:4000/api/v1/notices/aviso-1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "",
+    "description": "No debe guardarse"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

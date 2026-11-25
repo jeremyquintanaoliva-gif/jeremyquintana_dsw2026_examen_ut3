@@ -1,0 +1,22 @@
+meta {
+  name: 08.5 Crear aviso con description no cadena (400)
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:4000/api/v1/notices
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Aviso",
+    "description": 123
+  }
+}
+
+assert {
+  res.status: eq 400
+}

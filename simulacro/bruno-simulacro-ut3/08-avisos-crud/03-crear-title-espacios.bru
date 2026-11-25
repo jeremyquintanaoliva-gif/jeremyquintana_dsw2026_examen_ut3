@@ -1,0 +1,21 @@
+meta {
+  name: 08.3 Crear aviso con title solo espacios (400)
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:4000/api/v1/notices
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "   "
+  }
+}
+
+assert {
+  res.status: eq 400
+}

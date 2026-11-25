@@ -1,0 +1,24 @@
+meta {
+  name: 02.8 JSON mal formado
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://localhost:4000/api/v1/documents
+  body: text
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:text {
+  {"title": 
+}
+
+assert {
+  res.status: eq 400
+  res.body.error: eq INVALID_JSON
+}

@@ -1,7 +1,6 @@
-
 import { randomUUID } from 'node:crypto';
 
-// Estructura de cada aviso
+// Representa el modelo completo de un aviso.
 export interface Notice {
   id: string;
   title: string;
@@ -9,14 +8,14 @@ export interface Notice {
   createdAt: string;
 }
 
-// Campos que se pueden modificar en un aviso
+// Representa los campos opcionales que puede modificar una operación PATCH.
 export interface NoticeChanges {
   title?: string;
   description?: string;
 }
 
-// Los avisos se guardan en memoria: al reiniciar el servidor se pierden los
-// cambios y vuelve a estar disponible solamente la lista inicial.
+// Los avisos se guardan únicamente en memoria. Al reiniciar el servidor vuelven
+// a aparecer los datos iniciales y desaparecen las modificaciones realizadas.
 const notices: Notice[] = [
   {
     id: 'aviso-1',
@@ -50,27 +49,31 @@ const notices: Notice[] = [
   },
 ];
 
-// Convierte los parámetros de página en el rango que necesita Array.slice.
-// Ejemplo: página 2 y límite 10 empieza en el índice 10.
-export function list(page: number, limit: number) {
+// Filtra por título y después calcula la página solicitada.
+export function list(page: number, limit: number, search?: string) {
+  // toLowerCase permite realizar una búsqueda sin distinguir mayúsculas.
+  const filteredNotices = search
+    ? notices.filter((notice) => notice.title.toLowerCase().includes(search.toLowerCase()))
+    : notices;
+
   const start = (page - 1) * limit;
 
   return {
-    data: notices.slice(start, start + limit),
+    data: filteredNotices.slice(start, start + limit),
     pagination: {
       page,
       limit,
-      total: notices.length,
+      total: filteredNotices.length,
     },
   };
 }
 
-// Obtener aviso por ID
+// Busca el aviso por su identificador.
 export function getById(id: string): Notice | undefined {
   return notices.find((notice) => notice.id === id);
 }
 
-// Crear aviso
+// Genera un aviso nuevo con UUID y fecha ISO actuales.
 export function create(title: string, description: string): Notice {
   const notice: Notice = {
     id: randomUUID(),
@@ -84,11 +87,8 @@ export function create(title: string, description: string): Notice {
   return notice;
 }
 
-// Modificar aviso
-export function update(
-  id: string,
-  changes: NoticeChanges,
-): Notice | undefined {
+// Modifica únicamente los campos cuyo valor no sea undefined.
+export function update(id: string, changes: NoticeChanges): Notice | undefined {
   const notice = getById(id);
 
   if (!notice) {

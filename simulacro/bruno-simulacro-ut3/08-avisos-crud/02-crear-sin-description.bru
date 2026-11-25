@@ -1,0 +1,21 @@
+meta {
+  name: 08.2 Crear aviso sin description
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:4000/api/v1/notices
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Aviso sin descripcion"
+  }
+}
+
+assert {
+  res.status: eq 201
+}

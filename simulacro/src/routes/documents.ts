@@ -1,17 +1,16 @@
-
 import { Router } from 'express';
 import * as documentsController from '../controllers/documentsController.js';
 
 export const documentsRouter = Router();
 
-// Listar documentos
+// GET de colección: devuelve una lista paginada.
 documentsRouter.get('/', documentsController.list);
 
-// Crear documento
+// POST de colección: crea un nuevo recurso.
 documentsRouter.post('/', documentsController.create);
 
-// Obtener documento por ID
+// GET de recurso: consulta el documento identificado por documentId.
 documentsRouter.get('/:documentId', documentsController.getById);
 
-// Modificar documento
+// PATCH de recurso: modifica solo los campos enviados por el cliente.
 documentsRouter.patch('/:documentId', documentsController.update);
