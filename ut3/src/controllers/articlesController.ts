@@ -5,6 +5,7 @@
 import type { NextFunction, Request, Response } from 'express';
 
 import { AppError } from '../errors/AppError.js';
+import { AppErrorDescription } from '../errors/AppErrorDescription.js';
 import * as articlesService from '../services/articlesService.js';
 
 export function list(req: Request, res: Response, next: NextFunction): void {
@@ -36,13 +37,14 @@ export function create(req: Request, res: Response, next: NextFunction): void {
   try {
     const { title, description } = req.body;
     if (!title || typeof title !== 'string') {
-      throw new AppError(400, 'Missing required field: title', 'BAD_REQUEST');
+      throw new AppError(400, 'Missing required field: title', 'BAD_REQUET');
     }
+    
     const article = articlesService.create(
       title.trim(),
       typeof description === 'string' ? description.trim() : '',
     );
-
+    
     console.log('[5] Respuesta preparada: 201', req.requestId, { data: article });
     
     res.status(201).json({ data: article });
@@ -63,3 +65,4 @@ export function update(req: Request, res: Response, next: NextFunction): void {
     next(err);
   }
 }
+
