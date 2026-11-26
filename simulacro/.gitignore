@@ -8,6 +8,11 @@ dist/
 .env
 .env.local
 
+# Material del examen usado como referencia
+/Apuntes_DSW_UT3_Express_Bruno.pdf
+/DSW - Simulacro de examen de la UT3 (Primera parte).pdf
+/Simulacro de examen de la UT3 (Segunda parte).pdf
+
 # Logs
 *.log
 npm-debug.log*

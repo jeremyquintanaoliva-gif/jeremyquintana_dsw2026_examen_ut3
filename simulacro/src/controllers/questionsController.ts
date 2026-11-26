@@ -5,7 +5,7 @@ import { AppError } from '../errors/AppError.js';
 // Valida la pregunta recibida y devuelve una respuesta simulada.
 export function ask(req: Request, res: Response, next: NextFunction): void {
   try {
-    const { question } = req.body;
+    const { question } = req.body ?? {};
 
     // Una pregunta debe existir, ser una cadena y contener texto útil.
     if (typeof question !== 'string' || question.trim().length === 0) {

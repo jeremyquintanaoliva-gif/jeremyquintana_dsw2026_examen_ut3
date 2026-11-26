@@ -325,7 +325,7 @@ Keep-Alive: timeout=5
 `GET /api/v1/documents/no-existe`
 
 - **Intervienen:** los mismos hasta `documentsService.getById`, que devuelve `undefined`. El controlador lanza `ResourceNotFoundError`, el `catch` hace `next(err)`.
-- **Se genera la respuesta en:** `errorHandler`, rama `err instanceof ResourceNotFoundError`: 404 con `error`, `message` y `resourceId`.
+- **Se genera la respuesta en:** `errorHandler`, rama `err instanceof ResourceNotFoundError`: 404 con `message` y `resourceId`.
 - **`errorHandler`:** sí se ejecuta. Escribe primero su `console.error` y después el logger escribe su línea con `status: 404`.
 
 ### Caso 3: petición a una URL que no existe

@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
 
 import * as noticesService from '../services/noticesService.js';
-import { AppError, ResourceNotFoundError } from '../errors/AppError.js';
+import { AppError } from '../errors/AppError.js';
+import { ResourceNotFoundError } from '../errors/ResourceNotFoundError.js';
 
 // Lista avisos aplicando paginación y búsqueda opcional por título.
 // Las consultas inválidas se lanzan como AppError para que las gestione el

@@ -12,18 +12,3 @@ export class AppError extends Error {
     this.name = 'AppError';
   }
 }
-
-export class ResourceNotFoundError extends Error {
-  // Variante de error usada cuando se solicita un recurso concreto que no existe.
-  statusCode: number;
-  code: string;
-  resourceId: string;
-
-  constructor(statusCode: number, message: string, code: string, resourceId: string) {
-    super(message);
-    this.statusCode = statusCode;
-    this.code = code;
-    this.resourceId = resourceId;
-    this.name = 'ResourceNotFoundError';
-  }
-}

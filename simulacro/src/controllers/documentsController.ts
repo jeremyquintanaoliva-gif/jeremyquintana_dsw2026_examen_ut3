@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from 'express';
 
 import * as documentsService from '../services/documentsService.js';
-import { AppError, ResourceNotFoundError } from '../errors/AppError.js';
+import { AppError } from '../errors/AppError.js';
+import { ResourceNotFoundError } from '../errors/ResourceNotFoundError.js';
 
 // Convierte los parámetros de paginación y delega la consulta al servicio.
 // Los parámetros llegan como texto desde la URL y Number los transforma a números.
@@ -9,6 +10,14 @@ export function list(req: Request, res: Response, next: NextFunction): void {
   try {
     const page = Number(req.query.page ?? 1);
     const limit = Number(req.query.limit ?? 20);
+
+    if (!Number.isInteger(page) || page <= 0) {
+      throw new AppError(400, 'Page must be a positive integer', 'BAD_REQUEST');
+    }
+
+    if (!Number.isInteger(limit) || limit <= 0) {
+      throw new AppError(400, 'Limit must be a positive integer', 'BAD_REQUEST');
+    }
 
     res.json(documentsService.list(page, limit));
   } catch (err) {
@@ -41,10 +50,14 @@ export function getById(req: Request, res: Response, next: NextFunction): void {
 // La descripción es opcional y solo se acepta si es una cadena de texto.
 export function create(req: Request, res: Response, next: NextFunction): void {
   try {
-    const { title, description } = req.body;
+    const { title, description } = req.body ?? {};
 
-    if (!title || typeof title !== 'string') {
+    if (typeof title !== 'string' || title.trim() === '') {
       throw new AppError(400, 'Missing required field: title', 'BAD_REQUEST');
+    }
+
+    if (description !== undefined && typeof description !== 'string') {
+      throw new AppError(400, 'Invalid description', 'BAD_REQUEST');
     }
 
     const document = documentsService.create(
@@ -62,7 +75,7 @@ export function create(req: Request, res: Response, next: NextFunction): void {
 // Al ser PATCH, title y description son opcionales y pueden actualizarse por separado.
 export function update(req: Request, res: Response, next: NextFunction): void {
   try {
-    const { title, description } = req.body;
+    const { title, description } = req.body ?? {};
 
     // trim() elimina espacios iniciales y finales. Si queda vacío,
     // el título no es válido aunque el texto original solo contuviera espacios.

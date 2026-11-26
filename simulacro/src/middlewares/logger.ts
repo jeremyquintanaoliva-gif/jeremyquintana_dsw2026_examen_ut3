@@ -10,6 +10,7 @@ export function logger(req: Request, res: Response, next: NextFunction): void {
 
   // performance.now permite medir la duración con precisión en milisegundos.
   const start = performance.now();
+  const path = req.path;
 
   res.on('finish', () => {
     // El evento finish se dispara después de construir y enviar la respuesta.
@@ -17,7 +18,7 @@ export function logger(req: Request, res: Response, next: NextFunction): void {
     const entry = {
       requestId: req.requestId,
       method: req.method,
-      path: req.path,
+      path,
       status: res.statusCode,
       durationMs: duration,
       timestamp: new Date().toISOString(),

@@ -1,6 +1,10 @@
+import { existsSync } from 'node:fs';
+
 // Lee el archivo .env y carga sus valores en process.env.
 // Node.js utiliza estos datos para la configuración de la aplicación.
-process.loadEnvFile();
+if (existsSync('.env')) {
+  process.loadEnvFile();
+}
 
 export const env = {
   // Number convierte el texto recibido desde el entorno a número.

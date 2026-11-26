@@ -1,7 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 
 import { env } from '../config/env.js';
-import { AppError, ResourceNotFoundError } from '../errors/AppError.js';
+import { AppError } from '../errors/AppError.js';
+import { ResourceNotFoundError } from '../errors/ResourceNotFoundError.js';
 
 // Express reconoce este gestor por tener cuatro parámetros. _next es obligatorio
 // aunque no se use: permite diferenciar este middleware de un middleware normal.
@@ -29,7 +30,6 @@ export function errorHandler(
   // por lo que la respuesta puede dar un contexto más concreto que un error 404 normal.
   if (err instanceof ResourceNotFoundError) {
     res.status(err.statusCode).json({
-      error: err.code,
       message: err.message,
       resourceId: err.resourceId,
     });
